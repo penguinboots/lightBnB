@@ -41,8 +41,13 @@
   * `server.js` is the entry point to the application. This connects the routes to the database.
   * `apiRoutes.js` and `userRoutes.js` are responsible for any HTTP requests to `/users/something` or `/api/something`.
   * `database.js` is responsible for all queries to the database.
+  * `/db/index.js` contains structure for all database interactions.
 
 ## Database Organization
 
 ![ERD diagram](https://github.com/penguinboots/lightBnB/blob/main/LightBnB_WebApp/docs/erd_diagram.jpg?raw=true)
 
+## Setup Steps
+
+* Create database using /migrations and /seeds
+* Create .env file with relevant credential (see .env.example)
