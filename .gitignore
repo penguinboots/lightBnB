@@ -87,7 +87,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-
+.DS_Store
 LightBnB_WebApp/.DS_Store
 LightBnB_WebApp/docs/.DS_Store
 
