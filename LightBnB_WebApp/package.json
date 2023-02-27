@@ -18,5 +18,8 @@
     "express": "^4.17.1",
     "nodemon": "^1.19.1",
     "pg": "^8.9.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
   }
 }
