@@ -51,7 +51,6 @@ const addUser = function(user) {
       RETURNING *;`,
       [user.name, user.email, user.password])
     .then((result) => {
-      console.log(result.rows[0]);
       return result.rows[0];
     })
     .catch((error => {
