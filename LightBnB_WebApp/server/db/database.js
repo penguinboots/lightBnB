@@ -1,4 +1,4 @@
-const pool = require('./db/index');
+const pool = require('./index');
 
 /// Users
 
@@ -70,11 +70,12 @@ exports.addUser = addUser;
 const getAllReservations = function(guest_id, limit = 10) {
   return pool
     .query(
-      `SELECT reservations.*, properties.*
+      `SELECT reservations.*, properties.*, avg(property_reviews.rating) as average_rating
       FROM reservations
-      JOIN users ON users.id = guest_id
       JOIN properties on properties.id = property_id
-      WHERE guest_id = $1
+      JOIN property_reviews ON properties.id = property_reviews.property_id
+      WHERE reservations.guest_id = $1
+      GROUP BY reservations.id, properties.id
       LIMIT $2
       `,
       [guest_id, limit])
@@ -97,65 +98,63 @@ exports.getAllReservations = getAllReservations;
  */
 const getAllProperties = function(options, limit = 10) {
   let queryParams = [];
-
   let queryString =
     `SELECT properties.*, avg(property_reviews.rating) as average_rating
     FROM properties
     JOIN property_reviews ON properties.id = property_reviews.property_id
     `;
 
-  if (options.city) {
-    if (queryParams) {
+  // determine and add appropriate conjunction to query
+  const appendConjunction = () => {
+    if (queryParams.length === 0) {
       queryString += 'WHERE';
     } else {
       queryString += 'AND';
     }
+  };
+
+  // check for and apply CITY filter
+  if (options.city) {
+    appendConjunction();
     queryParams.push(`%${options.city}%`);
     queryString += ` city iLIKE $${queryParams.length}\n`;
   }
 
+  // check for and apply OWNER filter
   if (options.owner_id) {
-    if (queryParams) {
-      queryString += 'WHERE';
-    } else {
-      queryString += 'AND';
-    }
+    appendConjunction();
     queryParams.push(`${options.owner_id}`);
     queryString += ` properties.owner_id = $${queryParams.length}\n`;
   }
 
+  // check for and apply MINIMUM PRICE filter
   if (options.minimum_price_per_night) {
-    if (queryParams) {
-      queryString += 'WHERE';
-    } else {
-      queryString += 'AND';
-    }
+    appendConjunction();
     queryParams.push(`${options.minimum_price_per_night * 100}`);
     queryString += ` properties.cost_per_night >= $${queryParams.length}\n`;
   }
 
+  // check for and apply MAXIMUM PRICE filter
   if (options.maximum_price_per_night) {
-    if (queryParams) {
-      queryString += 'WHERE';
-    } else {
-      queryString += 'AND';
-    }
+    appendConjunction();
     queryParams.push(`${options.maximum_price_per_night * 100}`);
     queryString += ` properties.cost_per_night <= $${queryParams.length}\n`;
   }
 
   queryString += `GROUP BY properties.id\n`;
 
+  // check for and apply MINIMUM RATING filter
   if (options.minimum_rating) {
     queryParams.push(`${options.minimum_rating}`);
     queryString += `HAVING avg(property_reviews.rating) >= $${queryParams.length}\n`;
   }
 
+  // apply result quantity limit, order by cost_per_night
   queryParams.push(limit);
   queryString +=
     `ORDER BY cost_per_night
     LIMIT $${queryParams.length}`;
-
+  
   return pool
     .query(
       queryString, queryParams)
@@ -165,6 +164,7 @@ const getAllProperties = function(options, limit = 10) {
     .catch((err) => {
       console.log(err.message);
     });
+
 };
 exports.getAllProperties = getAllProperties;
 
@@ -195,22 +195,22 @@ const addProperty = function(property) {
   VALUES
   ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   RETURNING *`,
-    [
-      property.owner_id,
-      property.title,
-      property.description,
-      property.thumbnail_photo_url,
-      property.cover_photo_url,
-      property.cost_per_night * 100,
-      property.street,
-      property.city,
-      property.province,
-      property.post_code,
-      property.country,
-      property.parking_spaces,
-      property.number_of_bathrooms,
-      property.number_of_bedrooms
-    ])
+      [
+        property.owner_id,
+        property.title,
+        property.description,
+        property.thumbnail_photo_url,
+        property.cover_photo_url,
+        property.cost_per_night * 100,
+        property.street,
+        property.city,
+        property.province,
+        property.post_code,
+        property.country,
+        property.parking_spaces,
+        property.number_of_bathrooms,
+        property.number_of_bedrooms
+      ])
     .then((result) => {
       return result.rows[0];
     });
