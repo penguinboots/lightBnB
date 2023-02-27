@@ -1,5 +1,18 @@
 # LightBnB
 
+LightBnB is a Lighthouse Labs project, the purpose of which is to design a database and use server-side JavaScript to display information from queries to web pages. It applies knowledge of complex SQL queries and database/ERD design to integrate the database with a Node backend.
+
+## Features
+
+Users may
+* Browse existing listings
+* Filter existing listings by city, cost, and star rating
+
+Logged-in users may
+* Create listings
+* View their own listings
+* View their own reservations
+
 ## Project Structure
 
 ```
@@ -49,9 +62,11 @@ LightBnB_WebApp
 
 ![ERD diagram](https://github.com/penguinboots/lightBnB/blob/main/LightBnB_WebApp/docs/erd_diagram.jpg?raw=true)
 
-## Setup Steps
+## Running This Project
 
+* Clone project locally
 * Install dependencies
+  * `npm install`
 * Set up project database
     * `cd` to project root folder, enter `psql`
     * `CREATE DATABASE lightbnb`
@@ -60,4 +75,14 @@ LightBnB_WebApp
     * `\i seeds/01_seeds.sql`
     * `\i seeds/02_seeds.sql`
 * Create `.env` file in `/LightBnB_Webapp` with relevant credential (see `.env.example`)
-* `npm run local`
+* Run project
+  * `npm run local`
+
+## Dependencies
+
+  * **bcrypt**
+  * **body-parser**
+  * **cookie-session**
+  * **express**
+  * **nodemon**
+  * **pg**
