@@ -49,5 +49,13 @@
 
 ## Setup Steps
 
-* Create database using /migrations and /seeds
-* Create .env file with relevant credential (see .env.example)
+* Install dependencies
+* Set up project database
+    * `cd` to project root folder, enter `psql`
+    * `CREATE DATABASE lightbnb`
+    * `\c lightbnb`
+    * `\i migrations/02_schemas.sql`
+    * `\i seeds/01_seeds.sql`
+    * `\i seeds/02_seeds.sql`
+* Create `.env` file in `/LightBnB_Webapp` with relevant credential (see `.env.example`)
+* `npm run local`
