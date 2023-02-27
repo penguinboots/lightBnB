@@ -3,6 +3,7 @@
 ## Project Structure
 
 ```
+LightBnB_WebApp
 ├── public
 │   ├── index.html
 │   ├── javascript
@@ -37,11 +38,12 @@
     * `views_manager.js` manages which components appear on screen.
     * `components` contains all of the individual html components. They are all created using jQuery.
 * `sass` contains all of the sass files. 
-* `server` contains all of the server side and database code.
+* `server` contains all of the server side code.
   * `server.js` is the entry point to the application. This connects the routes to the database.
   * `apiRoutes.js` and `userRoutes.js` are responsible for any HTTP requests to `/users/something` or `/api/something`.
-  * `database.js` is responsible for all queries to the database.
-  * `/db/index.js` contains structure for all database interactions.
+  * `db` contains database code.
+    * `/db/database.js` is responsible for all queries to the database.
+    * `/db/index.js` contains structure for all database interactions.
 
 ## Database Organization
 
