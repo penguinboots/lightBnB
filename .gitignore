@@ -89,3 +89,6 @@ typings/
 
 
 LightBnB_WebApp/.DS_Store
+LightBnB_WebApp/docs/.DS_Store
+
+.gitignore
